@@ -65,8 +65,8 @@ public:
         
         IOACPIPlatformDevice* provider;
         
-        IOTimerEventSource* timerSource;
-        
+        //IOTimerEventSource* timerSource;
+		
         char* name;
         
         bool reading;
@@ -190,9 +190,9 @@ public:
     
     bool probe(IOService* device);
     
-    void InterruptOccured(OSObject* owner, IOInterruptEventSource* src, int intCount);
+    void interruptOccured(OSObject* owner, IOInterruptEventSource* src, int intCount);
     
-    void i2c_hid_get_input(OSObject* owner, IOTimerEventSource* sender);
+    void i2c_hid_get_input(OSObject* owner);
     
     bool i2c_hid_get_report_descriptor(i2c_hid *ihid);
     
