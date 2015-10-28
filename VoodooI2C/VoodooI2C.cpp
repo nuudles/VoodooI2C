@@ -593,8 +593,7 @@ int VoodooI2C::xferI2C(I2CBus* _dev, i2c_msg *msgs, int num) {
     
     nanoseconds_to_absolutetime(10000, &abstime);
     
-    sleep = _dev->commandGate->commandSleep(&_dev->commandComplete, (UInt32)abstime);
-    
+    sleep = _dev->commandGate->commandSleep(&_dev->commandComplete, abstime, THREAD_ABORTSAFE);
                                             
     if ( sleep == THREAD_TIMED_OUT ) {
         IOLog("%s::%s::Warning: Timeout waiting for bus ready\n", getName(), _dev->name);
