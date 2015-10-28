@@ -407,9 +407,12 @@ void VoodooI2CHIDDevice::InterruptOccured(OSObject* owner, IOInterruptEventSourc
 
 void VoodooI2CHIDDevice::i2c_hid_get_input(OSObject* owner, IOTimerEventSource* sender) {
 //    IOLog("getting input\n");
+    if (hid_device->reading)
+        return;
+
     UInt rsize;
     int ret;
-    
+
     rsize = UInt16(ihid->hdesc.wMaxInputLength);
     
     unsigned char* rdesc = (unsigned char *)IOMalloc(rsize);
