@@ -4,17 +4,17 @@ VoodooI2C is a project to bring support for I2C input devices to OS X. This repo
 
 # Current Status
 
-Currently the Intel Lynxpoint I2C controllers with device IDs `INT33C2` and `INT33C3` are almost fully supported.
+Currently the Intel Lynxpoint I2C controllers with device IDs `INT33C2`, `INT33C3`, `INT3432` and `INT3433` are almost fully supported.
 
 Support for i2c-hid touchscreens, trackpads and sensor hubs (which control accelerometer devices) is underway. Please note that this means the drivers are **WORK IN PROGRESS**, your devices will not work if you build and install this.
 
 # Supported Devices
 The following devices are confirmed to work with the current iteration of VoodooI2C
 
-* Synaptics 7500 Clearpad touchscreen
-* Atmel 1000 touchscreen
-
-Support for the Surface Pro 3 touchscreen is more than likely guaranteed (we have not yet been able to test it)
+* Synaptics 7500 Clearpad touchscreen (Dell Venue Pro 11) - only partially
+* Synaptics 7501 Clearpad touchscreen (Acer Switch 12)
+* Atmel 1000 touchscreen (Dell XPS 12)
+* NTRG 0001 touchscreen (Surface Pro 3)
 
 # Helping out and testing
 

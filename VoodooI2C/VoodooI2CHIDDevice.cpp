@@ -303,7 +303,7 @@ void VoodooI2CHIDDevice::i2c_hid_free_buffers(i2c_hid *ihid, UInt report_size) {
 
 int VoodooI2CHIDDevice::i2c_hid_fetch_hid_descriptor(i2c_hid *ihid) {
     struct i2c_hid_desc *hdesc = &ihid->hdesc;
-    UInt dsize;
+    //UInt dsize;
     int ret;
     
     ret = i2c_hid_command(ihid, &hid_descr_cmd, ihid->hdesc_buffer, sizeof(struct i2c_hid_desc));
@@ -340,7 +340,7 @@ int VoodooI2CHIDDevice::__i2c_hid_command(i2c_hid *ihid, struct i2c_hid_cmd *com
     int msg_num = 1;
     
     int length = command->length;
-    bool wait = command->wait;
+    //bool wait = command->wait;
     UInt registerIndex = command->registerIndex;
     
     if (command == &hid_descr_cmd) {
@@ -406,9 +406,12 @@ void VoodooI2CHIDDevice::interruptOccured(OSObject* owner, IOInterruptEventSourc
 
 void VoodooI2CHIDDevice::i2c_hid_get_input(OSObject* owner) {
 //    IOLog("getting input\n");
+    if (hid_device->reading)
+        return;
+
     UInt rsize;
     int ret;
-    
+
     rsize = UInt16(ihid->hdesc.wMaxInputLength);
     
     unsigned char* rdesc = (unsigned char *)IOMalloc(rsize);

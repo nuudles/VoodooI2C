@@ -140,9 +140,6 @@
 
 #define RMI_PRODUCT_ID_LENGTH 10
 
-#define __le16 SInt16
-#define __le32 SInt32
-
 #define HID_MIN_BUFFER_SIZE 64
 
 #define I2C_HID_PWR_ON 0x00
@@ -168,10 +165,6 @@ public:
 #define I2C_M_RECV_LEN 0x0400
         
 #define I2C_HID_READ_PENDING (1 << 2);
-        
-#define I2C_HID_CMD(opcode_) \
-        .opcode = opcode_, .length = 4,\
-        .registerIndex = offsetof(struct i2c_hid_desc, wCommandRegister)
     };
     
 
@@ -268,8 +261,8 @@ public:
     UInt32 readClearIntrbitsI2C(I2CBus* _dev);
     void releaseAllI2CChildren();
     void setI2CPowerState(I2CBus* _dev, bool enabled);
-    virtual bool start(IOService* provider);
-    virtual void stop(IOService* provider);
+    virtual bool start(IOService* provider) override;
+    virtual void stop(IOService* provider) override;
     int waitBusNotBusyI2C(I2CBus* _dev);
     void writel(I2CBus* _dev, UInt32 b, int offset);
     int xferI2C(I2CBus* _dev, i2c_msg *msgs, int num);
