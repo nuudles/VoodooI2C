@@ -302,7 +302,7 @@ void VoodooI2CHIDDevice::i2c_hid_free_buffers(i2c_hid *ihid, UInt report_size) {
 
 int VoodooI2CHIDDevice::i2c_hid_fetch_hid_descriptor(i2c_hid *ihid) {
     struct i2c_hid_desc *hdesc = &ihid->hdesc;
-    UInt dsize;
+    //UInt dsize;
     int ret;
     
     ret = i2c_hid_command(ihid, &hid_descr_cmd, ihid->hdesc_buffer, sizeof(struct i2c_hid_desc));
@@ -339,7 +339,7 @@ int VoodooI2CHIDDevice::__i2c_hid_command(i2c_hid *ihid, struct i2c_hid_cmd *com
     int msg_num = 1;
     
     int length = command->length;
-    bool wait = command->wait;
+    //bool wait = command->wait;
     UInt registerIndex = command->registerIndex;
     
     if (command == &hid_descr_cmd) {
