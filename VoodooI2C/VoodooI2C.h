@@ -6,7 +6,14 @@
 #include <IOKit/IOLocks.h>
 #include <IOKit/IOCommandGate.h>
 #include <string.h>
+#include "VoodooI2CDevice.h"
 #include "VoodooI2CHIDDevice.h"
+#include "VoodooCyapaGen3Device.h"
+#include "VoodooI2CAtmelMxtScreenDevice.h"
+
+#define kIOPMPowerOff		0
+
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
 
 #define STATUS_IDLE 0x0
 #define STATUS_WRITE_IN_PROGRESS 0x1
@@ -241,7 +248,7 @@ public:
     
     
     
-    VoodooI2CHIDDevice* bus_devices[2];
+    VoodooI2CDevice* bus_devices[2];
     int bus_devices_number;
     
 
@@ -261,8 +268,9 @@ public:
     UInt32 readClearIntrbitsI2C(I2CBus* _dev);
     void releaseAllI2CChildren();
     void setI2CPowerState(I2CBus* _dev, bool enabled);
-    virtual bool start(IOService* provider) override;
-    virtual void stop(IOService* provider) override;
+    IOReturn setPowerState(unsigned long powerState, IOService *whatDevice);
+    virtual bool start(IOService* provider);
+    virtual void stop(IOService* provider);
     int waitBusNotBusyI2C(I2CBus* _dev);
     void writel(I2CBus* _dev, UInt32 b, int offset);
     int xferI2C(I2CBus* _dev, i2c_msg *msgs, int num);
@@ -270,6 +278,7 @@ public:
     void xferMsgI2C(I2CBus* _dev);
     
     int i2c_master_recv(VoodooI2CHIDDevice::I2CDevice I2CDevice, UInt8 *buf, int count);
+    int i2c_master_send(VoodooI2CHIDDevice::I2CDevice I2CDevice, UInt8 *buf, int count);
     
     void interruptOccured(OSObject* owner, IOInterruptEventSource* src, int intCount);
     
