@@ -1,27 +1,27 @@
 //
-//  VoodooHIDWrapper.cpp
+//  VoodooAtmelTouchWrapper.cpp
 //  VoodooI2C
 //
 //  Created by Christopher Luu on 10/7/15.
 //  Copyright © 2015 Alexandre Daoud. All rights reserved.
 //
 
-#include "VoodooHIDWrapper.h"
-#include "VoodooI2CHIDDevice.h"
+#include "VoodooAtmelTouchWrapper.h"
+#include "VoodooI2CAtmelMxtScreenDevice.h"
 
-OSDefineMetaClassAndStructors(VoodooHIDWrapper, IOHIDDevice)
+OSDefineMetaClassAndStructors(VoodooAtmelTouchWrapper, IOHIDDevice)
 
-static VoodooI2CHIDDevice* GetOwner(const IOService *us)
+static VoodooI2CAtmelMxtScreenDevice* GetOwner(const IOService *us)
 {
     IOService *prov = us->getProvider();
     
     if (prov == NULL)
         return NULL;
-    return OSDynamicCast(VoodooI2CHIDDevice, prov);
+    return OSDynamicCast(VoodooI2CAtmelMxtScreenDevice, prov);
 }
 
-bool VoodooHIDWrapper::start(IOService *provider) {
-    if (OSDynamicCast(VoodooI2CHIDDevice, provider) == NULL)
+bool VoodooAtmelTouchWrapper::start(IOService *provider) {
+    if (OSDynamicCast(VoodooI2CAtmelMxtScreenDevice, provider) == NULL)
         return false;
 
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
@@ -29,14 +29,14 @@ bool VoodooHIDWrapper::start(IOService *provider) {
     return IOHIDDevice::start(provider);
 }
 
-IOReturn VoodooHIDWrapper::setProperties(OSObject *properties) {
+IOReturn VoodooAtmelTouchWrapper::setProperties(OSObject *properties) {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
     return kIOReturnUnsupported;
 }
 
-IOReturn VoodooHIDWrapper::newReportDescriptor(IOMemoryDescriptor **descriptor) const {
+IOReturn VoodooAtmelTouchWrapper::newReportDescriptor(IOMemoryDescriptor **descriptor) const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
-    IOBufferMemoryDescriptor *buffer = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task, 0, GetOwner(this)->ihid->hdesc.wReportDescLength);
+    IOBufferMemoryDescriptor *buffer = IOBufferMemoryDescriptor::inTaskWithOptions(kernel_task, 0, GetOwner(this)->reportDescriptorLength());
 
     if (buffer == NULL) return kIOReturnNoResources;
     GetOwner(this)->write_report_descriptor_to_buffer(buffer);
@@ -45,64 +45,68 @@ IOReturn VoodooHIDWrapper::newReportDescriptor(IOMemoryDescriptor **descriptor) 
     return kIOReturnSuccess;
 }
 
-IOReturn VoodooHIDWrapper::setReport(IOMemoryDescriptor *report, IOHIDReportType reportType, IOOptionBits options) {
+IOReturn VoodooAtmelTouchWrapper::setReport(IOMemoryDescriptor *report, IOHIDReportType reportType, IOOptionBits options) {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
     return kIOReturnUnsupported;
 }
 
-IOReturn VoodooHIDWrapper::getReport(IOMemoryDescriptor *report, IOHIDReportType reportType, IOOptionBits options) {
+IOReturn VoodooAtmelTouchWrapper::getReport(IOMemoryDescriptor *report, IOHIDReportType reportType, IOOptionBits options) {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
+    if (reportType == kIOHIDReportTypeOutput){
+        GetOwner(this)->write_report_to_buffer(report);
+        return kIOReturnSuccess;
+    }
     return kIOReturnUnsupported;
 }
 
-IOReturn VoodooHIDWrapper::handleReport(
+/*IOReturn VoodooAtmelTouchWrapper::handleReport(
                                         IOMemoryDescriptor * report,
                                         IOHIDReportType      reportType,
                                         IOOptionBits         options  ) {
     return IOHIDDevice::handleReport(report, reportType, options);
-}
+}*/
 
-OSString* VoodooHIDWrapper::newManufacturerString() const {
+OSString* VoodooAtmelTouchWrapper::newManufacturerString() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
-    return OSString::withCString("Lynx Point");
+    return OSString::withCString("Atmel");
 }
 
-OSNumber* VoodooHIDWrapper::newPrimaryUsageNumber() const {
+OSNumber* VoodooAtmelTouchWrapper::newPrimaryUsageNumber() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
     return OSNumber::withNumber(kHIDUsage_Dig_TouchScreen, 32);
 }
 
-OSNumber* VoodooHIDWrapper::newPrimaryUsagePageNumber() const {
+OSNumber* VoodooAtmelTouchWrapper::newPrimaryUsagePageNumber() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
     return OSNumber::withNumber(kHIDPage_Digitizer, 32);
 }
 
-OSNumber* VoodooHIDWrapper::newProductIDNumber() const {
+OSNumber* VoodooAtmelTouchWrapper::newProductIDNumber() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
-    return OSNumber::withNumber(GetOwner(this)->ihid->hdesc.wProductID, 16);
+    return OSNumber::withNumber(GetOwner(this)->productID(), 32);
 }
 
-OSString* VoodooHIDWrapper::newProductString() const {
+OSString* VoodooAtmelTouchWrapper::newProductString() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
-    return OSString::withCString("Synaptics 7500 Clearpad");
+    return OSString::withCString("MaxTouch Touch Screen");
 }
 
-OSString* VoodooHIDWrapper::newSerialNumberString() const {
+OSString* VoodooAtmelTouchWrapper::newSerialNumberString() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
     return OSString::withCString("1234");
 }
 
-OSString* VoodooHIDWrapper::newTransportString() const {
+OSString* VoodooAtmelTouchWrapper::newTransportString() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
     return OSString::withCString("I2C");
 }
 
-OSNumber* VoodooHIDWrapper::newVendorIDNumber() const {
+OSNumber* VoodooAtmelTouchWrapper::newVendorIDNumber() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
-    return OSNumber::withNumber(GetOwner(this)->ihid->hdesc.wVendorID, 16);
+    return OSNumber::withNumber(GetOwner(this)->vendorID(), 16);
 }
 
-OSNumber* VoodooHIDWrapper::newLocationIDNumber() const {
+OSNumber* VoodooAtmelTouchWrapper::newLocationIDNumber() const {
     IOLog("VoodooI2C: %s, line %d\n", __FILE__, __LINE__);
     return OSNumber::withNumber(123, 32);
 }

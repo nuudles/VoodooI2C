@@ -30,6 +30,7 @@
 			<string>VoodooI2C</string>
 			<key>IONameMatch</key>
 			<array>
+				<string>INT33C2</string>
 				<string>INT33C3</string>
 			</array>
 			<key>IOProviderClass</key>
@@ -45,11 +46,11 @@
 		<key>com.apple.iokit.IOHIDFamily</key>
 		<string>2.0</string>
 		<key>com.apple.kpi.iokit</key>
-		<string>15.0</string>
+		<string>14.0</string>
 		<key>com.apple.kpi.libkern</key>
-		<string>15.0</string>
+		<string>14.0</string>
 		<key>com.apple.kpi.mach</key>
-		<string>15.0</string>
+		<string>14.0</string>
 	</dict>
 </dict>
 </plist>
